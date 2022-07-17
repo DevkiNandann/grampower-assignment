@@ -3,28 +3,39 @@
 {% block optional %}
 {% load js %}
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable({{ data.chart_data | js }});
-
-        var options = {
-          title: 'Live Data',
-          curveType: 'function',
-          hAxis: {
-            title: data.getColumnLabel(0)
-          },
-          vAxis: {
-            title: data.getColumnLabel(1)
-          },
-        };
-
-        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-
-        chart.draw(data, options);
+<script type="text/javascript">
+  var isDrawing = false;
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(() => {
+    drawChart();
+    setTimeout(() => {
+      if (!isDrawing) {
+        drawChart();
       }
+    }, 5000);
+  });
+
+  function drawChart() {
+    isDrawing = true;
+    var options = {
+      title: 'Live Data',
+      curveType: 'function'
+    };
+    $.ajax({
+      method: "GET",
+      url: window.location.href,
+      success: function(r) {
+        var cdata = google.visualization.arrayToDataTable({{ data.chart_data | js }});
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        options["hAxis"] = {title: cdata.getColumnLabel(0)}
+        options["vAxis"] = {title: cdata.getColumnLabel(1)}
+        chart.draw(cdata, options);
+        isDrawing = false;
+      }
+    });
+  }
 </script>
+
 <style>
   table, th, td {
     border: 1px solid black;

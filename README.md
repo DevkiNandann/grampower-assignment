@@ -19,3 +19,5 @@ database and this functionality is looped on until celery is down.
 # Web App
 On traversing the url, login into the superuser account.
 You see a meter list clicking on which you will see its details.
+On details page, we are getting the live data using the Line chart from google charts
+this will be refreshing every 5 seconds.
