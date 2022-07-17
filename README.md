@@ -1,4 +1,4 @@
-# Clone the data
+# Clone code
 Clone the repo: git clone <repo name>
 Create your local python virtual enviroment: - Run: python3 -m venv env - To activate the virtual python enviroment run: source env/bin/activate
 Run pip install -r requirements.txt to install all python dependencies inside the virtual enviroment we will be developing on. See Errors section for help.
