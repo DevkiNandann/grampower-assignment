@@ -46,9 +46,9 @@ def get_chart_data(meters_data: list)-> list:
     Returns:
         list: chart data
     """
-    chart_data = [['Id', 'Active Power']]
+    chart_data = [['Time (HH:MM)', 'Active Power']]
     for data in meters_data:
-        response = [data.id, data.active_power] 
+        response = [data.meter_time.strftime("%H:%m"), data.active_power] 
         chart_data.append(response)
 
     return chart_data

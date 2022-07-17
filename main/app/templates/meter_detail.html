@@ -12,7 +12,12 @@
         var options = {
           title: 'Live Data',
           curveType: 'function',
-          legend: { position: 'bottom' }
+          hAxis: {
+            title: data.getColumnLabel(0)
+          },
+          vAxis: {
+            title: data.getColumnLabel(1)
+          },
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
