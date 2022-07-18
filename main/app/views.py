@@ -3,6 +3,7 @@ from app.forms import LoginForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
+from django.db.models import Avg
 from app.models import Meter, Reading
 from datetime import datetime, timedelta
 from app.helpers import get_chart_data
@@ -96,13 +97,14 @@ class MeterView(generic.View):
             # recent reading for the day
             recent_reading = same_address_meter.order_by("-meter_time").first()
             recent_active_energy = recent_reading.active_energy  if recent_reading else 0
-            total_consumption = recent_active_energy - first_active_energy
+            total_consumption = round(recent_active_energy - first_active_energy, 2)
 
             all_readings = same_address_meter.all()
 
-            average_phase_current = sum(reading.phase_current for reading in all_readings)/ len(all_readings)
-            average_neutral_current = sum(reading.neutral_current for reading in all_readings)/ len(all_readings)
-            average_voltage = sum(reading.voltage for reading in all_readings)/ len(all_readings)
+            average_data = same_address_meter.aggregate(Avg("voltage"), Avg("phase_current"), Avg("neutral_current"))
+            average_voltage = round(average_data["voltage__avg"], 2)
+            average_phase_current = round(average_data["phase_current__avg"], 2)
+            average_neutral_current = round(average_data["neutral_current__avg"], 2)
 
             if now - recent_reading.meter_time > timedelta(hours=1):
                 status = "Down"
